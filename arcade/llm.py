@@ -12,9 +12,9 @@ client = OpenAI(
 MODEL = "openai/gpt-4o-mini"
 
 
-def ask_llm(system_prompt: str, user_prompt: str) -> str:
+def ask_llm(system_prompt: str, user_prompt: str, model: str = MODEL) -> str:
     response = client.chat.completions.create(
-        model=MODEL,
+        model=model,
         messages=[
             {"role": "system", "content": system_prompt},
             {"role": "user", "content": user_prompt},
