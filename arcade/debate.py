@@ -35,4 +35,9 @@ def judge_debate(topic: str, transcript: list[str], model: str) -> dict:
     user_prompt = f"Topic: {topic}\n\nTranscript:\n" + "\n\n".join(transcript)
 
     reply = ask_llm(system_prompt, user_prompt, model=model)
-    return json.loads(reply)
+    start = reply.find("{")
+    end = reply.rfind("}")
+    if start == -1 or end == -1:
+        raise ValueError(f"Judge did not return JSON. Got: {reply!r}")
+    return json.loads(reply[start : end + 1])
+
