@@ -1,3 +1,4 @@
+import json
 from arcade.llm import ask_llm
 
 
@@ -23,3 +24,15 @@ def run_debate(topic: str, pro_model: str, con_model: str, rounds: int = 3) -> l
             transcript.append(f"{side} (round {round_num}): {argument}")
             print(transcript[-1], "\n")
     return transcript
+
+def judge_debate(topic: str, transcript: list[str], model: str) -> dict:
+    system_prompt = (
+        "You are an impartial debate judge. Score each side from 1 to 10 "
+        "on logic, evidence, and rebuttals. Reply with ONLY a JSON object, "
+        'no other text, in this exact format: '
+        '{"pro_score": int, "con_score": int, "winner": "PRO" or "CON", "reason": str}'
+    )
+    user_prompt = f"Topic: {topic}\n\nTranscript:\n" + "\n\n".join(transcript)
+
+    reply = ask_llm(system_prompt, user_prompt, model=model)
+    return json.loads(reply)
